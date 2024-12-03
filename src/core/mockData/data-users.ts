@@ -1,18 +1,22 @@
 import { faker } from "@faker-js/faker";
-import bcrypt from "bcrypt";
+//import { createHash } from "crypto";
+
+function simpleHash(password: string) {
+  return password//createHash('sha256').update(password).digest('hex');
+}
 
 async function generateUsers(numUsers: number) {
   const users = [];
   const password = "123456";
 
   for (let i = 0; i < numUsers; i++) {
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = simpleHash(password); // Use simple hash instead of bcrypt
 
     const user = {
       usuario: faker.internet.userName(),
       contraseña: hashedPassword,
-      nombre_completo: faker.name.fullName(), // Updated to use fullName method
-      telefono: Math.random() > 0.5 ? faker.phone.number() : null, // Updated to use number method
+      nombre_completo: faker.name.fullName(),
+      telefono: Math.random() > 0.5 ? faker.phone.number() : null,
       direccion: {
         pais: faker.address.country(),
         estado: faker.address.state(),
