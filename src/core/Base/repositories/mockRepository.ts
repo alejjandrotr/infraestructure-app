@@ -20,6 +20,12 @@ export class MockRepository<T extends { id?: string }>
   constructor(private config: ApiConfig) {
     this.loadData();
   }
+  labelNamel?: string | undefined;
+  
+  
+  getConfigPath(): string {
+    return this.config.path;
+  }
 
   publishUpdateEvent(data?: unknown): void {
     publish(this.config.path, data);

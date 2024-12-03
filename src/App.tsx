@@ -5,6 +5,7 @@ import CategoriasSalasAdminPage from "./pages/CategoriaSalas/sala-admin.page";
 import SalasAdminPage from "./pages/Salas/sala-admin.page";
 import DefaultLayout from "./components/layout/DefaultLayout";
 import PageTitle from "./components/PageTitle";
+import UsersAdminPage from "./pages/Usuarios/users-admin.page";
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -39,6 +40,16 @@ function App() {
             <>
               <PageTitle title="Categorias de las Salas del Cine | CineAdmin" />
               <CategoriasSalasAdminPage />
+            </>
+          }
+        />
+        
+        <Route
+          path="/users"
+          element={
+            <>
+              <PageTitle title="Usuario del Cine | CineAdmin" />
+              <UsersAdminPage />
             </>
           }
         />

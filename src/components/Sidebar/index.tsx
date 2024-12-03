@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import SidebarLinkGroup from "./SidebarLinkGroup";
-import Logo from "../../images/logo/logo.svg";
+import Logo from "../../images/logo/logo.svg"
 import { MenuLink } from "./menu-link";
 
 interface SidebarProps {
@@ -110,6 +110,13 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 <MenuLink
                   pathTo="categoria-sala"
                   title="Categoria de las Salas"
+                  pathname={pathname}
+                />
+              </li>
+              <li>
+                <MenuLink
+                  pathTo="users"
+                  title="Usuarios"
                   pathname={pathname}
                 />
               </li>

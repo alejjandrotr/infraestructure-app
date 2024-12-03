@@ -5,6 +5,7 @@ import { RepositoryType } from "../enums/RepositoryType";
 import { RepositoryMap } from "../dtos/repository-map.dto";
 import { IRepository } from "./IRepository";
 import { ENTITIES_KEYS } from "../../enums/entity-keys";
+import { confirmAlert } from "react-confirm-alert";
 
 export abstract class BaseRepositoryFactory<T> {
   static factoryRepository<T>(config: ApiConfig): IRepository<T> {
@@ -32,8 +33,9 @@ export abstract class BaseRepositoryFactory<T> {
 
 export abstract class BaseRepository<T> implements IRepository<T> {
   public repository: IRepository<T>;
+  public labelNamel?: string | undefined = '';
 
-  constructor({path, type}: ApiConfig) {
+  constructor({ path, type }: ApiConfig) {
     this.repository = BaseRepositoryFactory.factoryRepository<T>({
       path,
       type,
@@ -59,5 +61,36 @@ export abstract class BaseRepository<T> implements IRepository<T> {
   }
   async publishUpdateEvent() {
     this.repository.publishUpdateEvent();
+  }
+
+  async showDeleteMsg(e: T & { id?: string | number }) {
+    if (e.id === undefined) return;
+    const options = {
+      title: "Eliminar " + this.labelNamel,
+      message: `¿Desea eliminar este elemento:  ${this.labelNamel}?`,
+      buttons: [
+        {
+          label: "Si",
+          onClick: () => this.delete(e.id || -1),
+        },
+        {
+          label: "No",
+        },
+      ],
+      closeOnEscape: true,
+      closeOnClickOutside: true,
+      keyCodeForClose: [8, 32],
+      willUnmount: () => {},
+      afterClose: () => {},
+      onClickOutside: () => {},
+      onKeypress: () => {},
+      onKeypressEscape: () => {},
+      overlayClassName: "overlay-custom-class-name",
+    };
+    confirmAlert(options);
+  }
+
+  getConfigPath(): string {
+    return this.repository.getConfigPath();
   }
 }

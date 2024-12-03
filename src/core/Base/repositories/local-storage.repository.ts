@@ -4,6 +4,10 @@ import { NotFoundError } from '../errors/not-found.error';
 
 export class LocalStorageRepository<T extends { id: string }> implements IRepository<T> {
   constructor(private config: ApiConfig) {}
+  labelNamel?: string | undefined;
+  getConfigPath(): string {
+    throw new Error('Method not implemented.');
+  }
   
   
   publishUpdateEvent(): void {
