@@ -10,18 +10,27 @@ interface TableRowProps {
 
 const TableRow: React.FC<TableRowProps> = React.memo(
   ({ obj, columns, isLastRow }: TableRowProps) => {
+    const gridColums = columns.length > 4 ? columns.length : 5;
+
+    const rowStyle = {
+      gridTemplateColumns: `repeat(${gridColums}, minmax(0, 1fr))`,
+    };
+
     return (
       <>
-        {columns.map((column, index) => (
-          <div
-            key={`${column.key}-${obj.id || index}`}
-            className={`grid grid-cols-3 sm:grid-cols-5 ${
-              isLastRow ? "" : "border-b border-stroke dark:border-strokedark"
-            }`}
-          >
-            <TableCell {...{ column, obj }} />
-          </div>
-        ))}
+        <div
+          className={`grid  ${
+            isLastRow ? "" : "border-b border-stroke dark:border-strokedark"
+          }`}
+          style={rowStyle}
+        >
+          {columns.map((column, index) => (
+            <TableCell
+              key={`${column.key}-${obj.id || index}`}
+              {...{ column, obj }}
+            />
+          ))}
+        </div>
       </>
     );
   }

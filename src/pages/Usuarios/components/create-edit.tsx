@@ -1,20 +1,28 @@
-import { useState } from 'react';
-import toast from 'react-hot-toast';
-import Modal, { ModalProps } from '../../../components/modals/form.modal';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Sala, SalaSchema } from '../../../core/Sala/sala';
-import { useForm } from 'react-hook-form';
-import { InputText } from '../../../components/inputs/InputText';
-import { salaRepository } from '../../../core/Sala/sala.api';
+import { useState } from "react";
+import toast from "react-hot-toast";
+import Modal, { ModalProps } from "../../../components/modals/form.modal";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Sala, SalaSchema } from "../../../core/Sala/sala";
+import { useForm } from "react-hook-form";
+import { InputText } from "../../../components/inputs/InputText";
+import { salaRepository } from "../../../core/Sala/sala.api";
+import { IRepository } from "../../../core/Base/repositories/IRepository";
+import { submitToCreateOrUpdate } from "../../../core/utils/submit-create-update";
+import { User, UserSchema } from "../../../core/Users/user";
 
-export const CreateEditSala = ({
-  sala,
+export interface CreateEditProp<T> {
+  element: T;
+  repository: IRepository<T>;
+}
+export const CreateEdit = ({
+  element,
+  repository,
   ...modalProps
-}: ModalProps & { sala: Sala }) => {
+}: ModalProps & CreateEditProp<User>) => {
   const [isLoading, setIsLoading] = useState(false);
-  const { register, handleSubmit, formState, reset } = useForm<Sala>({
-    resolver: zodResolver(SalaSchema),
-    values: { ...sala },
+  const { register, handleSubmit, formState, reset } = useForm<User>({
+    resolver: zodResolver(UserSchema),
+    values: { ...element },
   });
 
   const cerrar = () => {
@@ -23,26 +31,21 @@ export const CreateEditSala = ({
   };
 
   const { errors, isValid } = formState;
-  const onSubmit = async (data: Sala) => {
+
+  const onSubmit = async (data: User) => {
     try {
-      console.log(data);
-      if (data.id !== undefined) {
-        const { id, ...rest } = data;
-        salaRepository.edit(id, rest);
-        return cerrar();
-      }
-      salaRepository.add(data);
-      return cerrar();
-    } catch (e: any) {
-      console.log(e);
-      toast.error(e.response?.data?.message || 'Error Inesperado');
+      setIsLoading(true);
+      await submitToCreateOrUpdate<User>(data, repository);
+      cerrar();
+    } catch (e) {
+    } finally {
       setIsLoading(false);
     }
   };
 
   return (
     <Modal
-      title="Gestionar Sala"
+      title="Gestionar Usuario"
       {...modalProps}
       onSubmit={onSubmit}
       handleSubmit={handleSubmit}
@@ -51,48 +54,62 @@ export const CreateEditSala = ({
     >
       <div className="p-2.5">
         <div className="mb-4.5 grid grid-cols-1 gap-6 xl:grid-cols-2">
-          <div className="w-full">
-            <InputText
-              name="codigo"
-              placeholder="Escriba el codigo de la sala"
-              error={errors.codigo}
-              label="Código"
-              {...{ register }}
-            />
-          </div>
+          <InputText
+            name="usuario"
+            placeholder="Escriba el nombre de usuario"
+            error={errors.usuario}
+            label="Nombre de Usuario"
+            register={register}
+          />
 
-          <div className="w-full">
-            <InputText
-              name="capacidad"
-              placeholder="Escriba la capacidad de la sala"
-              error={errors.capacidad}
-              label="Capacidad"
-              type="number"
-              {...{ register }}
-            />
-          </div>
+          <InputText
+            name="contraseña"
+            type="password" // Asegúrate de que sea un campo de contraseña
+            placeholder="Escriba la contraseña"
+            error={errors.contraseña}
+            label="Contraseña"
+            register={register}
+          />
 
-          <div className="w-full">
-            <InputText
-              name="ancho"
-              placeholder="Escriba el ancho de la sala"
-              error={errors.ancho}
-              label="Ancho"
-              type="number"
-              {...{ register }}
-            />
-          </div>
+          <InputText
+            name="nombre_completo"
+            placeholder="Escriba su nombre completo"
+            error={errors.nombre_completo}
+            label="Nombre Completo"
+            register={register}
+          />
 
-          <div className="w-full">
-            <InputText
-              name="largo"
-              placeholder="Escriba el largo de la sala"
-              error={errors.largo}
-              label="Largo"
-              type="number"
-              {...{ register }}
-            />
-          </div>
+          <InputText
+            name="telefono"
+            placeholder="Escriba su número de teléfono (opcional)"
+            error={errors.telefono}
+            label="Teléfono"
+            register={register}
+          />
+
+          <InputText
+            name="direccion.pais"
+            placeholder="Escriba el país"
+            error={errors.direccion?.pais}
+            label="País"
+            register={register}
+          />
+
+          <InputText
+            name="direccion.estado"
+            placeholder="Escriba el estado"
+            error={errors.direccion?.estado}
+            label="Estado"
+            register={register}
+          />
+
+          <InputText
+            name="direccion.ciudad"
+            placeholder="Escriba la ciudad"
+            error={errors.direccion?.ciudad}
+            label="Ciudad"
+            register={register}
+          />
         </div>
       </div>
     </Modal>

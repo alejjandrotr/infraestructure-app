@@ -1,11 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./assets/satoshi.css"
+import "./assets/satoshi.css";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
-import 'react-confirm-alert/src/react-confirm-alert.css'; 
+import "react-confirm-alert/src/react-confirm-alert.css";
+import { Toaster } from "react-hot-toast";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -13,6 +14,7 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <BrowserRouter>
+      <Toaster position="top-right" reverseOrder={false} />
       <App />
     </BrowserRouter>
   </React.StrictMode>

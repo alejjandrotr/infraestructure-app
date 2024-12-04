@@ -1,70 +1,83 @@
-import { useState } from 'react';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Sala, SalaFilter, SalaSchemaFilter } from '../../../core/Sala/sala';
-import { useForm } from 'react-hook-form';
-import { InputText } from '../../../components/inputs/InputText';
+import { useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Sala, SalaFilter, SalaSchemaFilter } from "../../../core/Sala/sala";
+import { useForm } from "react-hook-form";
+import { InputText } from "../../../components/inputs/InputText";
+import { User, UserFilter, UserSchemaFilter } from "../../../core/Users/user";
 
-export const FilterListSala = ({
+export const FilterList = ({
   onSearch,
 }: {
-  onSearch: (search: Sala) => void;
+  onSearch: (search: User) => void;
 }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const { register, handleSubmit, formState } = useForm<SalaFilter>({
-    resolver: zodResolver(SalaSchemaFilter),
+  const { register, handleSubmit, formState } = useForm<UserFilter>({
+    resolver: zodResolver(UserSchemaFilter),
     values: {},
   });
 
   const { errors } = formState;
-  const onSubmit = async (data: SalaFilter) => {
-    onSearch(data as Sala);
+  const onSubmit = async (data: UserFilter) => {
+    onSearch(data as User);
   };
 
   return (
     <form className="p-2.5" onSubmit={handleSubmit(onSubmit)}>
+      
       <div className="mb-4.5 grid grid-cols-1 gap-6 xl:grid-cols-4">
-        <div className="w-full">
-          <InputText
-            name="codigo"
-            placeholder="Código de la sala"
-            error={errors.codigo}
-            className="border rounded-md p-2 w-full"
-            {...{ register }}
-          />
-        </div>
+        <InputText
+          name="usuario"
+          placeholder="Escriba el nombre de usuario"
+          error={errors.usuario}
+          label="Nombre de Usuario"
+          className="border rounded-md p-2 w-full"
+          register={register}
+        />
 
-        <div className="w-full">
-          <InputText
-            name="capacidad"
-            placeholder="Capacidad"
-            error={errors.capacidad}
-            type="number"
-            className="border rounded-md p-2 w-full"
-            {...{ register }}
-          />
-        </div>
+        <InputText
+          name="nombre_completo"
+          placeholder="Escriba su nombre completo"
+          error={errors.nombre_completo}
+          label="Nombre Completo"
+          className="border rounded-md p-2 w-full"
+          register={register}
+        />
 
-        <div className="w-full">
-          <InputText
-            name="ancho"
-            placeholder="Ancho"
-            error={errors.ancho}
-            type="number"
-            className="border rounded-md p-2 w-full"
-            {...{ register }}
-          />
-        </div>
+        <InputText
+          name="telefono"
+          placeholder="Escriba su número de teléfono (opcional)"
+          error={errors.telefono}
+          label="Teléfono"
+          className="border rounded-md p-2 w-full"
+          register={register}
+        />
 
-        <div className="w-full">
-          <InputText
-            name="largo"
-            placeholder="Largo"
-            error={errors.largo}
-            type="number"
-            className="border rounded-md p-2 w-full"
-            {...{ register }}
-          />
-        </div>
+        <InputText
+          name="direccion.pais"
+          placeholder="Escriba el país"
+          error={errors.direccion?.pais}
+          label="País"
+          className="border rounded-md p-2 w-full"
+          register={register}
+        />
+
+        <InputText
+          name="direccion.estado"
+          placeholder="Escriba el estado"
+          error={errors.direccion?.estado}
+          label="Estado"
+          className="border rounded-md p-2 w-full"
+          register={register}
+        />
+
+        <InputText
+          name="direccion.ciudad"
+          placeholder="Escriba la ciudad"
+          error={errors.direccion?.ciudad}
+          label="Ciudad"
+          className="border rounded-md p-2 w-full"
+          register={register}
+        />
       </div>
 
       <div className="flex justify-end mt-4">
@@ -72,8 +85,8 @@ export const FilterListSala = ({
           type="submit"
           className={`px-4 py-2 rounded-md ${
             isLoading
-              ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
-              : 'bg-blue-600 text-white hover:bg-blue-700'
+              ? "bg-gray-400 text-gray-200 cursor-not-allowed"
+              : "bg-blue-600 text-white hover:bg-blue-700"
           }`}
         >
           Buscar
@@ -83,4 +96,4 @@ export const FilterListSala = ({
   );
 };
 
-export default FilterListSala;
+export default FilterList;

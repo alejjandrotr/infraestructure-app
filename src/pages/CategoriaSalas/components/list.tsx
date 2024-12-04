@@ -18,7 +18,6 @@ export const List = ({ edit }: { edit: (e: CategoriaSala) => void }) => {
 
   function updateData() {
     categoriaSalaRepository.get(filter as Partial<CategoriaSala> | string).then((data) => {
-      console.log(data)
       setData(data);
     });
   }

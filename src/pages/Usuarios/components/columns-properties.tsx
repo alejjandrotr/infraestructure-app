@@ -1,38 +1,42 @@
-
-import { EditButton } from '../../../components/buttons/edit-button';
-import { RemoveButton } from '../../../components/buttons/remove-button';
-import { Column } from '../../../components/tables/table-crud/dtos/column.dto';
-
+import { EditButton } from "../../../components/buttons/edit-button";
+import { RemoveButton } from "../../../components/buttons/remove-button";
+import { Column } from "../../../components/tables/table-crud/dtos/column.dto";
+import { User } from "../../../core/Users/user"; 
 
 export const columnsProperties: (
-  edit: (e: any) => void,
-  deleteFn: (e: any) => void
+  edit: (user: User) => void,
+  deleteFn: (user: User) => void
 ) => Column[] = (edit, deleteFn) => [
   {
-    key: 'codigo',
-    title: 'Codigo',
+    key: "usuario",
+    title: "Usuario",
+  },
+  
+  {
+    key: "nombre_completo",
+    title: "Nombre Completo",
   },
   {
-    key: 'capacidad',
-    title: 'Capacidad',
+    key: "direccion.pais",
+    title: "Pais",
   },
   {
-    key: 'largo',
-    title: 'Largo',
+    key: "direccion.estado",
+    title: "Estado",
   },
   {
-    key: 'ancho',
-    title: 'Ancho',
+    key: "direccion.ciudad",
+    title: "Ciudad",
   },
-
   {
-    key: 'options',
-    title: 'Opciones',
-    component(element: unknown) {
+    key: "options",
+    title: "Opciones",
+    component(userParams: unknown) {
+      const user = userParams as User;
       return (
         <>
-          <EditButton onClick={() =>  edit(element)} />
-          <RemoveButton onClick={() => deleteFn(element)} />
+          <EditButton onClick={() => edit(user)} />
+          <RemoveButton onClick={() => deleteFn(user)} />
         </>
       );
     },

@@ -13,6 +13,7 @@ async function generateUsers(numUsers: number) {
     const hashedPassword = simpleHash(password); // Use simple hash instead of bcrypt
 
     const user = {
+      id: i + 1,
       usuario: faker.internet.userName(),
       contraseña: hashedPassword,
       nombre_completo: faker.name.fullName(),

@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const UserSchema = z.object({
-  id: z.number().optional(),
+  id: z.union([z.number(), z.string()]).optional(),
   usuario: z.string().min(1, 'El nombre de usuario es requerido'),
   contraseña: z.string().min(6, 'La contraseña debe tener al menos 6 caracteres'),
   nombre_completo: z.string().min(1, 'El nombre completo es requerido'),
@@ -13,7 +13,16 @@ export const UserSchema = z.object({
   }),
 });
 
-export const UserSchemaFilter = UserSchema.partial();
+export const UserSchemaFilter = z.object({
+  usuario: z.string().optional(),
+  nombre_completo: z.string().optional(),
+  telefono: z.string().optional().optional(),
+  direccion: z.object({
+    pais: z.string().optional(),
+    estado: z.string().optional(),
+    ciudad: z.string().optional(),
+  }).optional(),
+});
 
 export type User = z.infer<typeof UserSchema> 
 
@@ -29,5 +38,6 @@ export const createNewUser: () => User = () => {
       estado: '',
       ciudad: '',
     },
+
   };
 };

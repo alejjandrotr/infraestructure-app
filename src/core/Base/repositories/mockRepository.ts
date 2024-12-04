@@ -61,10 +61,20 @@ export class MockRepository<T extends { id?: string }>
     return this.data.filter((obj) => this.matchesFilter(obj, filter));
   }
 
+  /** Aunque no es eficiente se supone esto lo hace el backend */
   private matchesFilter(obj: T, filter: Partial<T>): boolean {
     return Object.entries(filter).every(([key, filterValue]) => {
-      const objAttrValue = obj[key as keyof T ];
-      if (filterValue === undefined) return true;
+      if (filterValue === undefined || filterValue === '') return true;
+  
+      const objAttrValue = obj[key as keyof T];
+      if (typeof filterValue === 'object' && filterValue !== null) {
+        return this.matchesFilter(objAttrValue as T, filterValue);
+      }
+  
+      if (typeof objAttrValue === 'string' && typeof filterValue === 'string') {
+        return objAttrValue.toLowerCase().includes(filterValue.toLowerCase());
+      }
+
       return objAttrValue === filterValue;
     });
   }

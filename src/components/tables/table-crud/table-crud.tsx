@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { useFilteredData } from './hooks/table-filter.hook';
-import { usePagination } from './hooks/table-pagination.hook';
-import Pagination from './components/pagination';
-import { Column } from './dtos/column.dto';
-import ColumnHeader from './components/column-header';
-import TableRow from './components/table-row';
+import React, { useEffect, useState } from "react";
+import { useFilteredData } from "./hooks/table-filter.hook";
+import { usePagination } from "./hooks/table-pagination.hook";
+import Pagination from "./components/pagination";
+import { Column } from "./dtos/column.dto";
+import ColumnHeader from "./components/column-header";
+import TableRow from "./components/table-row";
 
 interface TableProps {
   title?: string;
@@ -43,6 +43,12 @@ const TableCrud = ({
     goToPage(1);
   };
 
+  const gridColums = columns.length > 4 ? columns.length : 5;
+
+  const rowStyle = {
+    gridTemplateColumns: `repeat(${gridColums}, minmax(0, 1fr))`,
+  };
+
   return (
     <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
       {title && (
@@ -52,28 +58,22 @@ const TableCrud = ({
       )}
 
       <div className="flex flex-col">
-        <div className="grid grid-cols-3 rounded-sm bg-gray-2 dark:bg-meta-4 sm:grid-cols-5">
+        <div
+          className={"grid rounded-sm bg-gray-2 dark:bg-meta-4 "}
+          style={rowStyle}
+        >
           {columns.map((column) => (
             <ColumnHeader key={column.key} title={column.title} />
           ))}
         </div>
 
         {currentItems.map((obj: any, index) => (
-          <div
-            className={`grid grid-cols-3 sm:grid-cols-5 ${
-              index === currentItems.length - 1
-                ? ''
-                : 'border-b border-stroke dark:border-strokedark'
-            }`}
+          <TableRow
             key={obj.id || index}
-          >
-            <TableRow
-              key={obj.id || index}
-              obj={obj}
-              columns={columns}
-              isLastRow={index === currentItems.length - 1}
-            />
-          </div>
+            obj={obj}
+            columns={columns}
+            isLastRow={index === currentItems.length - 1}
+          />
         ))}
       </div>
 
@@ -85,7 +85,7 @@ const TableCrud = ({
         onNextPage={nextPage}
         onPageChange={goToPage}
         itemsPerPage={itemsPerPage}
-        onItemsPerPageChange={handleItemsPerPageChange} 
+        onItemsPerPageChange={handleItemsPerPageChange}
         itemsPerPageOptions={itemsPerPageOptions}
       />
     </div>

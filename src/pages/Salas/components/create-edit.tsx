@@ -25,7 +25,6 @@ export const CreateEditSala = ({
   const { errors, isValid } = formState;
   const onSubmit = async (data: Sala) => {
     try {
-      console.log(data);
       if (data.id !== undefined) {
         const { id, ...rest } = data;
         salaRepository.edit(id, rest);
