@@ -1,14 +1,17 @@
-import { RepositoryType } from '../Base/enums/RepositoryType';
-import { BaseRepositoryFactory } from '../Base/repositories/repository.abstract';
-import { ENTITIES_KEYS } from '../enums/entity-keys';
-import { CategoriaSala } from './categoria-sala';
+import { RepositoryType } from "../Base/enums/RepositoryType";
+import {
+  BaseRepository,
+} from "../Base/repositories/repository.abstract";
+import { ENTITIES_KEYS } from "../enums/entity-keys";
+import { CategoriaSala } from "./categoria-sala";
 
-/*class SalaApi extends BaseRepositoryFactory<Sala> {
+class CategoriaSalaApi extends BaseRepository<CategoriaSala> {
   constructor() {
-    super({ path: 'sala', type: RepositoryType.MOCK });
+    super({
+      path: ENTITIES_KEYS.CATEGORIA_SALA,
+      type: RepositoryType.MOCK,
+      labelName: "Categoria de la Sala",
+    });
   }
-}*/
-export const categoriaSalaRepository = BaseRepositoryFactory.factoryRepository<CategoriaSala>({
-  path: ENTITIES_KEYS.CATEGORIA_SALA,
-  type: RepositoryType.MOCK,
-});
+}
+export const categoriaSalaRepository = new CategoriaSalaApi();

@@ -1,9 +1,12 @@
-import { ApiConfig } from './api-config.interface';
+import { ApiConfig } from '../dtos/api-config.interface';
 import { IRepository } from './IRepository';
 import { NotFoundError } from '../errors/not-found.error';
 
 export class LocalStorageRepository<T extends { id: string }> implements IRepository<T> {
   constructor(private config: ApiConfig) {}
+  setConfigPrePath(ps: string): string {
+    throw new Error('Method not implemented.');
+  }
   labelNamel?: string | undefined;
   getConfigPath(): string {
     throw new Error('Method not implemented.');

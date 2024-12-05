@@ -17,9 +17,9 @@ export const List = ({ edit }: { edit: (e: CategoriaSala) => void }) => {
   const columns: Column[] = columnsProperties(edit, deleteFn);
 
   function updateData() {
-    categoriaSalaRepository.get(filter as Partial<CategoriaSala> | string).then((data) => {
+    /*categoriaSalaRepository.get(filter as Partial<CategoriaSala> | string).then((data) => {
       setData(data);
-    });
+    });*/
   }
 
   useEffect(() => {

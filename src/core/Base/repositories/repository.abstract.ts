@@ -1,5 +1,5 @@
 import { BaseApi } from "./api";
-import { ApiConfig } from "./api-config.interface";
+import { ApiConfig, extraData } from "../dtos/api-config.interface";
 import { MockRepository } from "./mockRepository";
 import { RepositoryType } from "../enums/RepositoryType";
 import { RepositoryMap } from "../dtos/repository-map.dto";
@@ -33,31 +33,30 @@ export abstract class BaseRepositoryFactory<T> {
 
 export abstract class BaseRepository<T> implements IRepository<T> {
   public repository: IRepository<T>;
-  public labelNamel?: string | undefined = '';
+  public labelNamel?: string | undefined = "";
 
-  constructor({ path, type }: ApiConfig) {
-    this.repository = BaseRepositoryFactory.factoryRepository<T>({
-      path,
-      type,
-    });
+  constructor(public apiConfig: ApiConfig) {
+    this.apiConfig = apiConfig;
+    this.repository = BaseRepositoryFactory.factoryRepository<T>(apiConfig);
   }
-  async get(filter?: string | Partial<T> | undefined): Promise<T[]> {
-    return this.repository.get(filter);
+  async get(extraData?: extraData<T>): Promise<T[]> {
+    return this.repository.get(extraData);
   }
-  async getById(id: string | number): Promise<T | undefined> {
-    return this.repository.getById(id);
+  async getById(id: string | number, extraData?: extraData<T>): Promise<T | undefined> {
+    return this.repository.getById(id, extraData);
   }
-  async add(newItem: T): Promise<T> {
-    return this.repository.add(newItem);
+  async add(newItem: T, extraData?: extraData<T>): Promise<T> {
+    return this.repository.add(newItem, extraData);
   }
-  async delete(id: string | number): Promise<T[]> {
-    return this.repository.delete(id);
+  async delete(id: string | number, extraData?: extraData<T>): Promise<T[]> {
+    return this.repository.delete(id, extraData);
   }
   async edit(
     id: string | number,
-    updatedItem: Omit<T, "id"> & { id?: string | number }
+    updatedItem: Omit<T, "id"> & { id?: string | number },
+    extraData?: extraData<T>
   ): Promise<T> {
-    return this.repository.edit(id, updatedItem);
+    return this.repository.edit(id, updatedItem, extraData);
   }
   async publishUpdateEvent() {
     this.repository.publishUpdateEvent();
@@ -66,8 +65,8 @@ export abstract class BaseRepository<T> implements IRepository<T> {
   async showDeleteMsg(e: T & { id?: string | number }) {
     if (e.id === undefined) return;
     const options = {
-      title: "Eliminar " + this.labelNamel,
-      message: `¿Desea eliminar este elemento:  ${this.labelNamel}?`,
+      title: "Eliminar " + this.apiConfig.labelName,
+      message: `¿Desea eliminar este elemento:  ${this.apiConfig.labelName}?`,
       buttons: [
         {
           label: "Si",
@@ -92,5 +91,9 @@ export abstract class BaseRepository<T> implements IRepository<T> {
 
   getConfigPath(): string {
     return this.repository.getConfigPath();
+  }
+
+  getConfigRepositoryType(): string {
+    return this.apiConfig.type;
   }
 }

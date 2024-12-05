@@ -1,23 +1,29 @@
-import { useEffect, useState } from 'react';
-import { Sala } from '../../../core/Sala/sala';
-import { columnsProperties } from './columns-properties';
-import { salaRepository } from '../../../core/Sala/sala.api';
-import { subscribe } from '../../../core/events';
-import { ENTITIES_KEYS } from '../../../core/enums/entity-keys';
-import { confirmAlert } from 'react-confirm-alert';
-import { useFilter } from '../../../context/filter.context';
-import { Column } from '../../../components/tables/table-crud/dtos/column.dto';
-import TableCrud from '../../..//components/tables/table-crud/table-crud';
+import { useEffect, useState } from "react";
+import { Sala } from "../../../core/Sala/sala";
+import { columnsProperties } from "./columns-properties";
+import { salaRepository } from "../../../core/Sala/sala.api";
+import { subscribe } from "../../../core/events";
+import { ENTITIES_KEYS } from "../../../core/enums/entity-keys";
+import { confirmAlert } from "react-confirm-alert";
+import { useFilter } from "../../../context/filter.context";
+import { Column } from "../../../components/tables/table-crud/dtos/column.dto";
+import TableCrud from "../../..//components/tables/table-crud/table-crud";
+import { useNavigate } from "react-router-dom";
 
 export const List = ({ edit }: { edit: (e: Sala) => void }) => {
+  const navigate = useNavigate();
   const [data, setData] = useState<Sala[]>([]);
   const { filter } = useFilter();
-  const columns: Column[] = columnsProperties(edit, deleteFn);
+
+  const columns: Column[] = columnsProperties(edit, deleteFn, (element) => {
+    const idSala = element.id;
+    navigate(`/sala/${idSala}/asientos`);
+  });
 
   function updateData() {
-    salaRepository.get(filter as Partial<Sala> | string).then((data) => {
+    /*salaRepository.get(filter as Partial<Sala> | string).then((data) => {
       setData(data);
-    });
+    });*/
   }
 
   useEffect(() => {
@@ -37,15 +43,15 @@ function deleteFn(e: Sala): void {
   if (e.id === undefined) return;
 
   const options = {
-    title: 'Eliminar sala',
-    message: '¿Desea eliminar la sala?',
+    title: "Eliminar sala",
+    message: "¿Desea eliminar la sala?",
     buttons: [
       {
-        label: 'Si',
+        label: "Si",
         onClick: () => salaRepository.delete(e.id || -1),
       },
       {
-        label: 'No',
+        label: "No",
       },
     ],
     closeOnEscape: true,
@@ -56,7 +62,7 @@ function deleteFn(e: Sala): void {
     onClickOutside: () => {},
     onKeypress: () => {},
     onKeypressEscape: () => {},
-    overlayClassName: 'overlay-custom-class-name',
+    overlayClassName: "overlay-custom-class-name",
   };
   confirmAlert(options);
 }

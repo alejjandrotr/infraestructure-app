@@ -1,5 +1,5 @@
 import { LocalStorageRepository } from './local-storage.repository'; // Adjust the import path as necessary
-import { ApiConfig } from './api-config.interface';
+import { ApiConfig } from '../dtos/api-config.interface';
 import { RepositoryType } from '../enums/RepositoryType';
 
 interface Sala {
@@ -13,6 +13,7 @@ interface Sala {
 const config: ApiConfig = {
   path: 'salas',
   type: RepositoryType.LOCALSTORAGE,
+  labelName: 'Sala'
 };
 
 describe('LocalStorageRepository', () => {

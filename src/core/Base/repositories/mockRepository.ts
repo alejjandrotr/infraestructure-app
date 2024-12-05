@@ -1,28 +1,27 @@
-import toast from 'react-hot-toast';
-import { publish } from '../../events';
-import { dataMap } from '../../mockData';
-import { ApiConfig } from './api-config.interface';
-import { IRepository } from './IRepository';
-import { v4 as uuidv4 } from 'uuid';
+import toast from "react-hot-toast";
+import { publish } from "../../events";
+import { dataMap } from "../../mockData";
+import { ApiConfig, extraData } from "../dtos/api-config.interface";
+import { IRepository } from "./IRepository";
+import { v4 as uuidv4 } from "uuid";
 
 class NotFoundError extends Error {
   constructor(path: string, id: string) {
     super(`The ${path} with id ${id} not found.`);
-    this.name = 'NotFoundError';
+    this.name = "NotFoundError";
   }
 }
 
 export class MockRepository<T extends { id?: string }>
   implements IRepository<T>
 {
-  private data: T[] = []; // In-memory data storage
+  private data: T[] = [];
+  labelNamel?: string | undefined;
 
   constructor(private config: ApiConfig) {
     this.loadData();
   }
-  labelNamel?: string | undefined;
-  
-  
+
   getConfigPath(): string {
     return this.config.path;
   }
@@ -38,40 +37,63 @@ export class MockRepository<T extends { id?: string }>
         this.data = [];
         return;
       }
-      const mockDataFunction: () => Promise<unknown[]> | unknown[] = dataMap[fileName];
-      this.data = await mockDataFunction() as T[];
+      const mockDataFunction: () => Promise<unknown[]> | unknown[] =
+        dataMap[fileName];
+      this.data = (await mockDataFunction()) as T[];
     } catch (error) {
-      console.error('Error fetching initial data:', error);
+      console.error("Error fetching initial data:", error);
       throw error;
     }
   }
 
-  async get(filter?: Partial<T> | string): Promise<T[]> {
-
-    if (!filter) return this.data; 
-    
-    if (typeof filter === 'string') {
+  async get(extraData?: extraData<T>): Promise<T[]> {
+    const actualData = this.getData(this.data, extraData);
+    if (!extraData || !extraData.filter) return actualData;
+    const { filter } = extraData;
+    if (typeof filter === "string") {
       const lowercasedFilter = filter.toLowerCase();
-      return this.data.filter((obj) =>
+      return actualData.filter((obj) =>
         Object.values(obj).some((value) =>
           String(value).toLowerCase().includes(lowercasedFilter)
         )
       );
     }
-    return this.data.filter((obj) => this.matchesFilter(obj, filter));
+    return actualData.filter((obj) => this.matchesFilter(obj, filter));
+  }
+
+  private getData(data: T[], extraData?: extraData<T>): T[] {
+    if (!extraData || !extraData.prePath) {
+      return data;
+    }
+
+    const foundObject = this.getParentData(extraData, data);
+
+    if (!foundObject) {
+      return [];
+    }
+    const key = this.config.path as keyof T;
+    return (foundObject[key] as T[]) || [];
+  }
+
+  private getParentData(extraData: extraData<T>, data: T[]) {
+    if (extraData.prePath === undefined)
+      throw new Error("Entity without parent");
+    const [path, id] = extraData.prePath.split("/");
+    const foundObject = data.find((obj) => obj.id + "" === id);
+    return foundObject;
   }
 
   /** Aunque no es eficiente se supone esto lo hace el backend */
   private matchesFilter(obj: T, filter: Partial<T>): boolean {
     return Object.entries(filter).every(([key, filterValue]) => {
-      if (filterValue === undefined || filterValue === '') return true;
-  
+      if (filterValue === undefined || filterValue === "") return true;
+
       const objAttrValue = obj[key as keyof T];
-      if (typeof filterValue === 'object' && filterValue !== null) {
+      if (typeof filterValue === "object" && filterValue !== null) {
         return this.matchesFilter(objAttrValue as T, filterValue);
       }
-  
-      if (typeof objAttrValue === 'string' && typeof filterValue === 'string') {
+
+      if (typeof objAttrValue === "string" && typeof filterValue === "string") {
         return objAttrValue.toLowerCase().includes(filterValue.toLowerCase());
       }
 
@@ -79,45 +101,61 @@ export class MockRepository<T extends { id?: string }>
     });
   }
 
-  async getById(id: string): Promise<T | undefined> {
-    return this.data.find((item) => item.id === id);
+  async getById(id: string, extraData?: extraData<T>): Promise<T | undefined> {
+    const actualData = this.getData(this.data, extraData);
+    const result = actualData.find((item) => item.id === id);
+    return Promise.resolve(result);
   }
 
-  async add(newItem: T): Promise<T> {
+  async add(newItem: T, extraData?: extraData<T>): Promise<T> {
+    const actualData = this.getData(this.data, extraData);
     newItem.id = uuidv4();
-    this.data.push(newItem);
-    this.publishUpdateEvent(this.data);
+    actualData.push(newItem);
+    this.publishUpdateEvent(newItem);
     return newItem;
   }
 
-  async delete(id: string): Promise<T[]> {
-    const itemToDelete = await this.getById(id);
+  async delete(id: string, extraData?: extraData<T>): Promise<T[]> {
+    const itemToDelete = await this.getById(id, extraData);
 
     if (!itemToDelete) {
       throw new NotFoundError(this.config.path, id);
     }
 
-    this.data = this.data.filter((item) => item.id !== id);
+    const actualData = this.getData(this.data, extraData);
+    const filteredData = actualData.filter((item) => item.id !== id);
+
+    if (extraData?.prePath === undefined) {
+      this.data = filteredData;
+    } else {
+      const parentData = this.getParentData(extraData, this.data) as any;
+      const key = this.config.path as any;
+      parentData[key] = filteredData;
+    }
+
     this.publishUpdateEvent(this.data);
-    toast.success('Se ha eliminado correctamente el elemento');
+    toast.success("Se ha eliminado correctamente el elemento");
     return this.data;
   }
 
   async edit(
     id: string,
-    updatedItem: Omit<T, 'id'> & { id: string }
+    updatedItem: Omit<T, "id"> & { id: string },
+    extraData?: extraData<T>
   ): Promise<T> {
-    const existingItem = await this.getById(id);
+    const existingItem = await this.getById(id, extraData);
 
     if (!existingItem) {
       throw new NotFoundError(this.config.path, id);
     }
 
     const editedItem = { ...existingItem, ...updatedItem };
-    const index = this.data.findIndex((item) => item.id === id);
 
-    this.data[index] = editedItem;
-    this.publishUpdateEvent(this.data);
+    const actualData = this.getData(this.data, extraData);
+    const index = actualData.findIndex((item) => item.id === id);
+
+    actualData[index] = editedItem;
+    this.publishUpdateEvent(editedItem);
     return editedItem;
   }
 }

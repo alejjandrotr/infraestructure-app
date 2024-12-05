@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ApiConfig } from "./api-config.interface";
+import { ApiConfig } from "../dtos/api-config.interface";
 
 const HOST_URL = "localhost:3005";
 

@@ -6,6 +6,7 @@ import SalasAdminPage from "./pages/Salas/sala-admin.page";
 import DefaultLayout from "./components/layout/DefaultLayout";
 import PageTitle from "./components/PageTitle";
 import UsersAdminPage from "./pages/Usuarios/users-admin.page";
+import AsientosAdminPage from "./pages/Asientos/asientos-admin.page";
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -35,6 +36,16 @@ function App() {
         />
 
         <Route
+          path="/sala/:idSala/asientos"
+          element={
+            <>
+              <PageTitle title="Asientos del Cine | CineAdmin" />
+              <AsientosAdminPage />
+            </>
+          }
+        />
+
+        <Route
           path="/categoria-sala"
           element={
             <>
@@ -43,7 +54,7 @@ function App() {
             </>
           }
         />
-        
+
         <Route
           path="/users"
           element={

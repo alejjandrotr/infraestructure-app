@@ -1,102 +1,141 @@
-import { MockRepository } from './mockRepository'; // Adjust the import path as necessary
-import { ApiConfig } from './api-config.interface';
-import { RepositoryType } from '../enums/RepositoryType';
+import { MockRepository } from "./mockRepository";
+import { ApiConfig } from "../dtos/api-config.interface";
+import { extraData } from "../dtos/api-config.interface";
+import { RepositoryType } from "../enums/RepositoryType";
+import {
+  mockData,
+  mockDataWithSubitem,
+  mockSubItemData,
+} from "../../mockData/mockData";
+import { ENTITIES_KEYS } from "../../enums/entity-keys";
 
-interface Sala {
-  id: string;
-  codigo: string;
-  capacidad: number;
-  largo: number;
-  ancho: number;
-}
+jest.mock("../../events", () => ({
+  publish: jest.fn(),
+}));
 
-const config: ApiConfig = {
-  path: 'salas',
-  type: RepositoryType.MOCK,
-};
+describe("Test Mock repository", () => {
+  describe("MockRepository wtih One", () => {
+    let repository: MockRepository<{ id?: string; name?: string }>;
 
-describe('MockRepository', () => {
-  const repository = new MockRepository<Sala>(config);
+    beforeEach(async () => {
+      const config: ApiConfig = {
+        path: ENTITIES_KEYS.MOCK_DATA,
+        type: RepositoryType.MOCK,
+        labelName: "MOCK",
+      };
+      repository = new MockRepository(config);
+    });
 
-  test('should add a new item', async () => {
-    const newSala = () =>
-      ({
-        id: '1',
-        codigo: 'A',
-        capacidad: 100,
-        largo: 20,
-        ancho: 10,
-      });
+    test("should load initial data correctly", async () => {
+      const data = await repository.get();
+      expect(data).toEqual(mockData());
+    });
 
-    const addedSala = await repository.add(newSala());
-    expect(addedSala).toEqual(newSala());
+    test("should add a new item", async () => {
+      const newItem = { name: "New Item" };
+      const addedItem = await repository.add(newItem);
 
-    const currentData = await repository.get();
-    expect(currentData).toContainEqual(newSala());
+      expect(addedItem).toHaveProperty("id");
+      expect(addedItem.name).toBe(newItem.name);
+
+      const allData = await repository.get();
+      expect(allData).toContainEqual(addedItem);
+    });
+
+    test("should edit an existing item", async () => {
+      const updatedItem = { id: "1", name: "Updated Item" };
+      const editedItem = await repository.edit("1", updatedItem);
+
+      expect(editedItem.name).toBe(updatedItem.name);
+
+      const allData = await repository.get();
+      expect(allData).toContainEqual(editedItem);
+    });
+
+    test("should delete an item", async () => {
+      const initialData = await repository.get();
+      expect(initialData.length).toBe(2);
+
+      await repository.delete("1");
+
+      const updatedData = await repository.get();
+      expect(updatedData.length).toBe(1);
+      expect(updatedData).not.toContainEqual(initialData[0]);
+    });
+
+    test("should throw NotFoundError when deleting non-existent item", async () => {
+      await expect(repository.delete("non-existent-id")).rejects.toThrowError();
+    });
+
+    test("should get an item by ID", async () => {
+      const item = await repository.getById("1");
+      expect(item).toEqual(mockData()[0]);
+    });
+
+    test("should not get an item by ID", async () => {
+      const nonExistentItem = await repository.getById("non-existent-id");
+      expect(nonExistentItem).toBeUndefined();
+    });
   });
 
-  test('should retrieve an item by ID', async () => {
-    const newSala: Sala = {
-      id: '2',
-      codigo: 'B',
-      capacidad: 150,
-      largo: 25,
-      ancho: 15,
-    };
+  describe("MockRepository with Subitems", () => {
+    let repository: MockRepository<{
+      id?: string;
+      name?: string;
+      subItem?: any[];
+    }>;
 
-    await repository.add(newSala);
+    beforeEach(async () => {
+      const config: ApiConfig = {
+        path: ENTITIES_KEYS.MOCK_DATA_SUBITEM,
+        type: RepositoryType.MOCK,
+        labelName: "MOCK",
+      };
+      repository = new MockRepository(config);
+    });
 
-    const retrievedSala = await repository.getById('2');
-    expect(retrievedSala).toEqual(newSala);
-  });
+    test("should load initial data correctly with subitems", async () => {
+      const data = await repository.get();
+      expect(data).toEqual(mockDataWithSubitem());
+    });
 
-  test('should edit an existing item', async () => {
-    const newSala: Sala = {
-      id: '3',
-      codigo: 'C',
-      capacidad: 200,
-      largo: 30,
-      ancho: 20,
-    };
+    test("should get subitems by prePath", async () => {
+      const extra: extraData<{ id?: string }> = { prePath: "mock/1" };
+      const subItems = await repository.get(extra);
 
-    await repository.add(newSala);
+      expect(subItems).toEqual(mockSubItemData());
+    });
 
-    const updatedSala = {
-      codigo: 'C Updated',
-      capacidad: 250,
-      largo: 35,
-      ancho: 25,
-    };
+    test("should add a new subitem", async () => {
+      const newItem = { name: "New Sub Item" };
+      const extra: extraData<{ id?: string }> = { prePath: "mock/1" };
 
-    const editedSala = await repository.edit('3', { ...updatedSala, id: '3' });
+      const addedItem = await repository.add(newItem, extra);
 
-    expect(editedSala).toEqual({ id: '3', ...updatedSala });
+      expect(addedItem).toHaveProperty("id");
+      expect(addedItem.name).toBe(newItem.name);
 
-    const currentData = await repository.get();
-    expect(currentData).toContainEqual({ id: '3', ...updatedSala });
-  });
+      const allSubItems = await repository.get(extra);
+      expect(allSubItems).toContainEqual(addedItem);
+    });
 
-  test('should delete an item by ID', async () => {
-    const newSala: Sala = {
-      id: '4',
-      codigo: 'D',
-      capacidad: 300,
-      largo: 40,
-      ancho: 30,
-    };
+    test("should delete a subitem", async () => {
+      const extra: extraData<{ id?: string }> = { prePath: "mock/1" };
 
-    await repository.add(newSala);
+      await repository.delete("1", extra);
 
-    const remainingSalas = await repository.delete('4');
+      const updatedSubItems = await repository.get(extra);
+      expect(updatedSubItems.length).toBe(1);
+      expect(updatedSubItems).not.toContainEqual({ id: "1", name: "Item 1" });
+    });
 
-    expect(remainingSalas).not.toContainEqual(newSala);
-
-    expect(await repository.getById('4')).toBeUndefined();
-  });
-
-  test('should throw NotFoundError when deleting non-existent item', async () => {
-    await expect(repository.delete('non-existent-id')).rejects.toThrowError(
-      /not found/
-    );
+    test("should edit a subitem", async () => {
+      const extra: extraData<{ id?: string }> = { prePath: "mock/1" };
+      const updatedSubItem = { id: "1", name: "Updated Sub Item" };
+      const editedItem = await repository.edit("1", updatedSubItem, extra);
+      expect(editedItem.name).toBe(updatedSubItem.name);
+      const updatedSubItems = await repository.get(extra);
+      expect(updatedSubItems).toContainEqual(editedItem);
+    });
   });
 });

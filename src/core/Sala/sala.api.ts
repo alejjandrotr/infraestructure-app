@@ -1,14 +1,18 @@
-import { RepositoryType } from '../Base/enums/RepositoryType';
-import { BaseRepositoryFactory } from '../Base/repositories/repository.abstract';
-import { ENTITIES_KEYS } from '../enums/entity-keys';
-import { Sala } from './sala';
+import { RepositoryType } from "../Base/enums/RepositoryType";
+import {
+  BaseRepository,
+  BaseRepositoryFactory,
+} from "../Base/repositories/repository.abstract";
+import { ENTITIES_KEYS } from "../enums/entity-keys";
+import { Sala } from "./sala";
 
-/*class SalaApi extends BaseRepositoryFactory<Sala> {
+class SalaApi extends BaseRepository<Sala> {
   constructor() {
-    super({ path: 'sala', type: RepositoryType.MOCK });
+    super({
+      path: ENTITIES_KEYS.SALA,
+      type: RepositoryType.MOCK,
+      labelName: "Sala",
+    });
   }
-}*/
-export const salaRepository = BaseRepositoryFactory.factoryRepository<Sala>({
-  path: ENTITIES_KEYS.SALA,
-  type: RepositoryType.MOCK,
-});
+}
+export const salaRepository = new SalaApi();

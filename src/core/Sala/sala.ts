@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { Asiento } from '../Asientos/asiento';
 
 export const SalaSchema = z.object({
   id: z.number().optional(),
@@ -12,6 +13,7 @@ export const SalaSchemaFilter = SalaSchema.partial();
 
 export type Sala = z.infer<typeof SalaSchema> & {
   categoriaId?: string | number;
+  asientos?: Asiento[]
 };
 export type SalaFilter = z.infer<typeof SalaSchemaFilter> & {
   categoriaId?: string | number;
