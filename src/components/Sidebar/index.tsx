@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
-import { NavLink, useLocation } from "react-router-dom";
-import SidebarLinkGroup from "./SidebarLinkGroup";
-import Logo from "../../images/logo/logo.svg"
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import Logo from "../../images/logo/logo.svg";
 import { MenuLink } from "./menu-link";
+import { useAuth } from "../../core/Users/context/auth.context";
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -10,6 +10,8 @@ interface SidebarProps {
 }
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
+  const navigate = useNavigate();
+  const { logout } = useAuth();
   const location = useLocation();
   const { pathname } = location;
 
@@ -17,7 +19,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const sidebar = useRef<any>(null);
 
   const storedSidebarExpanded = localStorage.getItem("sidebar-expanded");
-  const [sidebarExpanded, setSidebarExpanded] = useState(
+  const [sidebarExpanded, _setSidebarExpanded] = useState(
     storedSidebarExpanded === null ? false : storedSidebarExpanded === "true"
   );
 
@@ -56,6 +58,10 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
     }
   }, [sidebarExpanded]);
 
+  const cerrarSesion = () => {
+    logout()
+    navigate('/')
+  };
   return (
     <aside
       ref={sidebar}
@@ -114,9 +120,13 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 />
               </li>
               <li>
+                <MenuLink pathTo="users" title="Usuarios" pathname={pathname} />
+              </li>
+
+              <li onClick={cerrarSesion}>
                 <MenuLink
-                  pathTo="users"
-                  title="Usuarios"
+                  pathTo="auth/sign-in"
+                  title="Cerrar Sesion"
                   pathname={pathname}
                 />
               </li>

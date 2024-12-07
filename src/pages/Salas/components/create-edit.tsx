@@ -33,7 +33,6 @@ export const CreateEditSala = ({
       salaRepository.add(data);
       return cerrar();
     } catch (e: any) {
-      console.log(e);
       toast.error(e.response?.data?.message || 'Error Inesperado');
       setIsLoading(false);
     }
@@ -45,7 +44,7 @@ export const CreateEditSala = ({
       {...modalProps}
       onSubmit={onSubmit}
       handleSubmit={handleSubmit}
-      {...{ isValid: !isValid }}
+      {...{ isValid: !isValid || isLoading }}
       onClose={cerrar}
     >
       <div className="p-2.5">

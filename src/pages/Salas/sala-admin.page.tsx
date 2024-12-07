@@ -1,4 +1,3 @@
-import { List } from "./components/list";
 import { CreateEditSala } from "./components/create-edit";
 import { useState } from "react";
 import { createNewSala, Sala } from "../../core/Sala/sala";

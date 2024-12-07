@@ -9,7 +9,7 @@ import { ENTITIES_KEYS } from "../enums/entity-keys";
 import { Asiento } from "./asiento";
 
 type AsientoExtraData = extraData<Asiento> & {
-  idSala: number;
+  idSala: number | string;
 };
 
 class AsientoApi extends BaseRepository<Asiento> {

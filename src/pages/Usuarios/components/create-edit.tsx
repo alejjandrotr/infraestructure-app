@@ -1,11 +1,8 @@
 import { useState } from "react";
-import toast from "react-hot-toast";
 import Modal, { ModalProps } from "../../../components/modals/form.modal";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Sala, SalaSchema } from "../../../core/Sala/sala";
 import { useForm } from "react-hook-form";
 import { InputText } from "../../../components/inputs/InputText";
-import { salaRepository } from "../../../core/Sala/sala.api";
 import { IRepository } from "../../../core/Base/repositories/IRepository";
 import { submitToCreateOrUpdate } from "../../../core/utils/submit-create-update";
 import { User, UserSchema } from "../../../core/Users/user";
@@ -49,7 +46,7 @@ export const CreateEdit = ({
       {...modalProps}
       onSubmit={onSubmit}
       handleSubmit={handleSubmit}
-      {...{ isValid: !isValid }}
+      {...{ isValid: !isValid || isLoading  }}
       onClose={cerrar}
     >
       <div className="p-2.5">

@@ -37,13 +37,12 @@ export const CreateEdit = ({
   ) {
     try {
       if (element.id !== undefined) {
-        console.log("edit");
         const { id, ...rest } = data;
-        await asientosRepository.edit(element.id, rest, {}, idSala);
+        await asientosRepository.edit(element.id, rest, { idSala });
         toast.success("Se ha eliminado exitosamente");
         return;
       }
-      await asientosRepository.add(data, {}, idSala);
+      await asientosRepository.add(data, { idSala });
       toast.success("Se ha agregado exitosamente");
     } catch (e: any) {
       toast.error(e.response?.data?.message || "Error Inesperado");

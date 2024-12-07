@@ -29,24 +29,19 @@ const AsientosAdmin = ({ idSala }: { idSala: string }) => {
   const { setFilter, filter } = useFilter();
 
   const edit = (e: Asiento) => {
-    console.log(e);
     setEdtiElement(e);
     setIsOpenModal(true);
   };
 
   const columns: Column[] = columnsProperties(edit, (e: Asiento) => {
-    console.log(e);
     asientosRepository.showDeleteMsg(e, idSala);
   });
 
   async function updateData() {
-    console.log("upt");
-    const extraData = { filter: filter as Partial<unknown> | string };
-    const asientos = await asientosRepository
-      .get(extraData, idSala)
-      .then((data) => {
-        return data;
-      });
+    const extraData = { filter: filter as Partial<unknown> | string, idSala };
+    const asientos = await asientosRepository.get(extraData).then((data) => {
+      return data;
+    });
     return asientos;
   }
 

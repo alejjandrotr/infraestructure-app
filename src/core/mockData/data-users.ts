@@ -23,8 +23,12 @@ async function generateUsers(numUsers: number) {
 }
 
 export const fakeUsersGenerator = async () => {
+  const defaultUser: User = {
+    ...mockUser(1000, "123456"),
+    usuario: "admin",
+  };
   const users = await generateUsers(50);
-  return users;
+  return [...users, defaultUser];
 };
 
 export function mockUser(i: number, hashedPassword: string): User {

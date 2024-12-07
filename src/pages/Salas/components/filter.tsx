@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Sala, SalaFilter, SalaSchemaFilter } from '../../../core/Sala/sala';
-import { useForm } from 'react-hook-form';
-import { InputText } from '../../../components/inputs/InputText';
+import { useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Sala, SalaFilter, SalaSchemaFilter } from "../../../core/Sala/sala";
+import { useForm } from "react-hook-form";
+import { InputText } from "../../../components/inputs/InputText";
 
 export const FilterListSala = ({
   onSearch,
@@ -17,7 +17,9 @@ export const FilterListSala = ({
 
   const { errors } = formState;
   const onSubmit = async (data: SalaFilter) => {
-    onSearch(data as Sala);
+    setIsLoading(true);
+    await onSearch(data as Sala);
+    setIsLoading(false);
   };
 
   return (
@@ -72,8 +74,8 @@ export const FilterListSala = ({
           type="submit"
           className={`px-4 py-2 rounded-md ${
             isLoading
-              ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
-              : 'bg-blue-600 text-white hover:bg-blue-700'
+              ? "bg-gray-400 text-gray-200 cursor-not-allowed"
+              : "bg-blue-600 text-white hover:bg-blue-700"
           }`}
         >
           Buscar

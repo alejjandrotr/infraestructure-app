@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { Sala } from '../../../core/Sala/sala';
 import { columnsProperties } from './columns-properties';
 import { salaRepository } from '../../../core/Sala/sala.api';
 import { subscribe } from '../../../core/events';
@@ -9,7 +8,6 @@ import { useFilter } from '../../../context/filter.context';
 import { Column } from '../../../components/tables/table-crud/dtos/column.dto';
 import TableCrud from '../../../components/tables/table-crud/table-crud';
 import { CategoriaSala } from '../../../core/CategoriaSala/categoria-sala';
-import { categoriaSalaRepository } from '../../../core/CategoriaSala/categoria-sala.api';
 
 export const List = ({ edit }: { edit: (e: CategoriaSala) => void }) => {
   const [data, setData] = useState<CategoriaSala[]>([]);

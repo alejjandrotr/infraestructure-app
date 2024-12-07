@@ -1,6 +1,5 @@
 import { GenericList } from "../../components/crud-commons/generic-list";
 import { useState } from "react";
-import { createNewSala, Sala } from "../../core/Sala/sala";
 import { FilterProvider, useFilter } from "../../context/filter.context";
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb";
 import { columnsProperties } from "./components/columns-properties";

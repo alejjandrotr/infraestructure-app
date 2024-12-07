@@ -1,47 +1,44 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { subscribe, unsubscribe } from "../../core/events";
 import { useFilter } from "../../context/filter.context";
 import { Column } from "../tables/table-crud/dtos/column.dto";
 import TableCrud from "../tables/table-crud/table-crud";
 import { IRepository } from "../../core/Base/repositories/IRepository";
 
-export const GenericList = ({
+interface GenericListProps<T> {
+  columns: Column[];
+  repository: IRepository<T>;
+  updateDataFn?: () => Promise<T[]>;
+}
+
+export const GenericList = <T,>({
   columns,
   repository,
   updateDataFn,
-}: {
-  columns: Column[];
-  repository: IRepository<any>;
-  updateDataFn?: () => Promise<unknown[]>;
-}) => {
-  const [data, setData] = useState<unknown[]>([]);
+}: GenericListProps<T>) => {
+  const [data, setData] = useState<T[]>([]);
   const { filter } = useFilter();
 
-  async function updateData() {
-    if (updateDataFn) {
-      const data = await updateDataFn();
-      setData(data as unknown[]);
-      return;
+  const updateData = useCallback(async () => {
+    try {
+      const fetchedData = updateDataFn
+        ? await updateDataFn()
+        : await repository.get({ filter: filter as Partial<T> | string });
+      setData(fetchedData);
+    } catch (error) {
+      console.error("Error fetching data:", error);
     }
-    const extraData = { filter: filter as Partial<unknown> | string };
-    repository.get(extraData).then((data) => {
-      setData(data);
-    });
-  }
+  }, [updateDataFn, repository, filter]);
 
   useEffect(() => {
     updateData();
-    const lintener = () => {
-      updateData();
-    };
-    subscribe(repository.getConfigPath(), lintener);
+    const listener = () => updateData();
+    subscribe(repository.getConfigPath(), listener);
+
     return () => {
-      unsubscribe(repository.getConfigPath(), lintener);
+      unsubscribe(repository.getConfigPath(), listener);
     };
-  }, []);
+  }, [updateData, repository]);
 
-  useEffect(() => {
-    updateData();
-  }, [filter]);
-  return <TableCrud {...{ data, columns }} />;
+  return <TableCrud data={data} columns={columns} />;
 };

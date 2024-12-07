@@ -2,7 +2,6 @@
 import { List } from './components/list';
 import { CreateEdit } from './components/create-edit';
 import { useState } from 'react';
-import { createNewSala, Sala } from '../../core/Sala/sala';
 import FilterListCategoriaSala from './components/filter';
 import { SearchComponent } from '../../components';
 import { FilterProvider, useFilter } from '../../context/filter.context';

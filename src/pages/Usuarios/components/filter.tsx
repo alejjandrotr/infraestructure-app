@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Sala, SalaFilter, SalaSchemaFilter } from "../../../core/Sala/sala";
 import { useForm } from "react-hook-form";
 import { InputText } from "../../../components/inputs/InputText";
 import { User, UserFilter, UserSchemaFilter } from "../../../core/Users/user";
@@ -18,7 +17,9 @@ export const FilterList = ({
 
   const { errors } = formState;
   const onSubmit = async (data: UserFilter) => {
-    onSearch(data as User);
+    setIsLoading(true);
+    await onSearch(data as User);
+    setIsLoading(false)
   };
 
   return (
