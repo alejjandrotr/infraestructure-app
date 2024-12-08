@@ -1,10 +1,6 @@
-
-import { FC } from 'react';
 import { EditButton } from '../../../components/buttons/edit-button';
-import { OptionButton, OptionButtonProps } from '../../../components/buttons/option-button';
 import { RemoveButton } from '../../../components/buttons/remove-button';
 import { Column } from '../../../components/tables/table-crud/dtos/column.dto';
-import { MdEventSeat } from "react-icons/md";
 import { VerAsientosButton } from '../../Salas/components/columns-properties';
 
 

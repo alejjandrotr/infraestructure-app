@@ -1,15 +1,13 @@
-import { BaseApi } from "./api";
 import { ApiConfig, extraData } from "../dtos/api-config.interface";
 import { MockRepository } from "./mockRepository";
 import { RepositoryType } from "../enums/RepositoryType";
 import { RepositoryMap } from "../dtos/repository-map.dto";
 import { IRepository } from "./IRepository";
-import { ENTITIES_KEYS } from "../../enums/entity-keys";
 import { confirmAlert } from "react-confirm-alert";
 import { BaseEntity } from "../dtos/base-entity.interface";
 import { SelectOption } from "../../../components/select/select-crud";
 
-export abstract class BaseRepositoryFactory<T> {
+export abstract class BaseRepositoryFactory {
   static factoryRepository<T>(config: ApiConfig): IRepository<T> {
     const repositoryBuilders: RepositoryMap<T> = {
       [RepositoryType.MOCK]: () =>
