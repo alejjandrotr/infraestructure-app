@@ -5,4 +5,5 @@ export enum ENTITIES_KEYS {
   ASIENTOS = "asientos",
   MOCK_DATA = "MOCK_DATA",
   MOCK_DATA_SUBITEM = "mockSubitem",
+  RESERVA_SALA = "RESERVA_SALA",
 }

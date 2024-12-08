@@ -1,21 +1,31 @@
-import { useState } from 'react';
-import toast from 'react-hot-toast';
-import Modal, { ModalProps } from '../../../components/modals/form.modal';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Sala, SalaSchema } from '../../../core/Sala/sala';
-import { useForm } from 'react-hook-form';
-import { InputText } from '../../../components/inputs/InputText';
-import { salaRepository } from '../../../core/Sala/sala.api';
+import { useState } from "react";
+import toast from "react-hot-toast";
+import Modal, { ModalProps } from "../../../components/modals/form.modal";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Sala, SalaSchema } from "../../../core/Sala/sala";
+import { useForm } from "react-hook-form";
+import { InputText } from "../../../components/inputs/InputText";
+import { salaRepository } from "../../../core/Sala/sala.api";
+import useOptionsForSelect from "../../../core/hooks/options.hook";
+import SelectCRUD from "../../../components/select/select-crud";
+import { categoriaSalaRepository } from "../../../core/CategoriaSala/categoria-sala.api";
 
 export const CreateEditSala = ({
   sala,
   ...modalProps
 }: ModalProps & { sala: Sala }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const { register, handleSubmit, formState, reset } = useForm<Sala>({
-    resolver: zodResolver(SalaSchema),
-    values: { ...sala },
-  });
+
+  const { data: categoriaSalaOptions } = useOptionsForSelect(
+    categoriaSalaRepository
+  );
+
+  const { register, handleSubmit, formState, reset, getValues } = useForm<Sala>(
+    {
+      resolver: zodResolver(SalaSchema),
+      values: { ...sala },
+    }
+  );
 
   const cerrar = () => {
     reset();
@@ -33,7 +43,7 @@ export const CreateEditSala = ({
       salaRepository.add(data);
       return cerrar();
     } catch (e: any) {
-      toast.error(e.response?.data?.message || 'Error Inesperado');
+      toast.error(e.response?.data?.message || "Error Inesperado");
       setIsLoading(false);
     }
   };
@@ -88,6 +98,21 @@ export const CreateEditSala = ({
               error={errors.largo}
               label="Largo"
               type="number"
+              {...{ register }}
+            />
+          </div>
+
+          <div className="w-full">
+            <SelectCRUD
+              name="categoriaId"
+              placeholder="Escriba la categoria de la sala"
+              error={errors.largo}
+              label="Categoria de la Sala"
+              type="number"
+              selectedOption={getValues().categoriaId}
+              isOptionSelected={!errors.categoriaId}
+              options={categoriaSalaOptions}
+              valueAsNumber={true}
               {...{ register }}
             />
           </div>

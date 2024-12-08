@@ -6,6 +6,8 @@ import { RepositoryMap } from "../dtos/repository-map.dto";
 import { IRepository } from "./IRepository";
 import { ENTITIES_KEYS } from "../../enums/entity-keys";
 import { confirmAlert } from "react-confirm-alert";
+import { BaseEntity } from "../dtos/base-entity.interface";
+import { SelectOption } from "../../../components/select/select-crud";
 
 export abstract class BaseRepositoryFactory<T> {
   static factoryRepository<T>(config: ApiConfig): IRepository<T> {
@@ -42,7 +44,10 @@ export abstract class BaseRepository<T> implements IRepository<T> {
   async get(extraData?: extraData<T>): Promise<T[]> {
     return this.repository.get(extraData);
   }
-  async getById(id: string | number, extraData?: extraData<T>): Promise<T | undefined> {
+  async getById(
+    id: string | number,
+    extraData?: extraData<T>
+  ): Promise<T | undefined> {
     return this.repository.getById(id, extraData);
   }
   async add(newItem: T, extraData?: extraData<T>): Promise<T> {
@@ -62,6 +67,7 @@ export abstract class BaseRepository<T> implements IRepository<T> {
     this.repository.publishUpdateEvent();
   }
 
+  /** Should we separeta the logic service backend and front */
   async showDeleteMsg(e: T & { id?: string | number }) {
     if (e.id === undefined) return;
     const options = {
@@ -87,6 +93,47 @@ export abstract class BaseRepository<T> implements IRepository<T> {
       overlayClassName: "overlay-custom-class-name",
     };
     confirmAlert(options);
+  }
+
+  getOptions: () => Promise<SelectOption[]> = async () => {
+    const data = await this.get();
+    return data.map((d) => {
+      const dAux = d as BaseEntity;
+      return {
+        value: dAux.id || -1,
+        label: this.getEntityLabelName(d),
+      };
+    });
+  };
+
+  getOptionsLikeMap = async (): Promise<Record<number, SelectOption>> => {
+    const data = await this.get();
+
+    return data.reduce((acc, d) => {
+      const { id } = d as BaseEntity;
+      acc[id || -1] = {
+        value: id || -1,
+        label: this.getEntityLabelName(d),
+      };
+      return acc;
+    }, {} as Record<number, SelectOption>);
+  };
+
+  getOptionsMap = async (): Promise<Record<number, T>> => {
+    const data = await this.get();
+
+    return data.reduce((acc, d) => {
+      const { id } = d as BaseEntity;
+      acc[id || -1] = {
+        ...d,
+      };
+      return acc;
+    }, {} as Record<number, T>);
+  };
+
+  getEntityLabelName(d: T): string {
+    const d1 = d as BaseEntity;
+    return d1.id + "";
   }
 
   getConfigPath(): string {

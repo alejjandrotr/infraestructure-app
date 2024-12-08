@@ -23,6 +23,6 @@ export const AddButton = ({
                "
     onClick={onClick}
   >
-    <FaPlus /> Agregar Sala
+    <FaPlus /> Agregar {title}
   </Link>
 );

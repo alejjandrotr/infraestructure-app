@@ -13,5 +13,9 @@ class CategoriaSalaApi extends BaseRepository<CategoriaSala> {
       labelName: "Categoria de la Sala",
     });
   }
+
+  getEntityLabelName(d: CategoriaSala): string {
+    return d.nombre;
+  }
 }
 export const categoriaSalaRepository = new CategoriaSalaApi();

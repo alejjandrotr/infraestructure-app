@@ -3,6 +3,8 @@ import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import Logo from "../../images/logo/logo.svg";
 import { MenuLink } from "./menu-link";
 import { useAuth } from "../../core/Users/context/auth.context";
+import { AppPaths } from "./AppPaths";
+import { AppTitles } from "./AppTitles";
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -110,17 +112,23 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
             <ul className="mb-6 flex flex-col gap-1.5">
               <li>
-                <MenuLink pathTo="sala" title="Sala" pathname={pathname} />
+                <MenuLink pathTo={AppPaths.SALAS} title={AppTitles.SALAS} pathname={pathname} />
               </li>
               <li>
                 <MenuLink
-                  pathTo="categoria-sala"
-                  title="Categoria de las Salas"
+                  pathTo={AppPaths.CATEGORIA_SALAS} title={AppTitles.CATEGORIA_SALAS}
+                  pathname={pathname}
+                />
+              </li>
+
+              <li>
+                <MenuLink
+                pathTo={AppPaths.RESERVA_SALA} title={AppTitles.RESERVA_SALA}
                   pathname={pathname}
                 />
               </li>
               <li>
-                <MenuLink pathTo="users" title="Usuarios" pathname={pathname} />
+                <MenuLink pathTo={AppPaths.USERS} title={AppTitles.USERS} pathname={pathname} />
               </li>
 
               <li onClick={cerrarSesion}>

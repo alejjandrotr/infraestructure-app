@@ -12,6 +12,7 @@ export const SearchComponent = ({
   children,
   onSearch,
   onAdd,
+  title
 }: SearchComponentProps) => {
   const [isAdvancedSearch, setIsAdvancedSearch] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -59,7 +60,7 @@ export const SearchComponent = ({
         </button>
       )}
       <div className="flex-initial">
-        <AddButton onClick={onAdd} title="Salas" />
+        <AddButton onClick={onAdd} title={title} />
       </div>
     </div>
   );

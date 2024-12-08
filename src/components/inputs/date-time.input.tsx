@@ -1,28 +1,30 @@
 import React from "react";
 import { FieldError, UseFormRegister } from "react-hook-form";
 
-export interface InputProp
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "valueAsNumber"> {
+export interface DateTimeInputProps
+  extends Omit<
+    React.InputHTMLAttributes<HTMLInputElement>,
+    "valueAsNumber" | "defaultValue"
+  > {
   label?: string;
   register: UseFormRegister<any>;
   name: string;
-  valueAsNumber?: boolean;
   error?: FieldError;
+  defaultValue?: Date;
 }
 
-export const InputText: React.FC<InputProp> = ({
+export const DateTimeInput: React.FC<DateTimeInputProps> = ({
   label,
   register,
   name,
-  valueAsNumber,
   error,
-  type = "text",
   placeholder,
+  defaultValue,
   className = "",
-  ...rest // Usar rest para otras props
+  ...rest
 }) => {
   const id = `input-${name}`;
-  valueAsNumber = valueAsNumber || (type === "number" ? true : false);
+
   const classForInput =
     className ||
     `w-full rounded-lg border-[1.5px] py-3 px-5 transition outline-none ${
@@ -40,12 +42,12 @@ export const InputText: React.FC<InputProp> = ({
         </label>
       )}
       <input
-        id={id} // Asignar el ID al input
-        type={type}
+        id={id}
+        type="datetime-local"
         placeholder={placeholder}
         className={classForInput}
-        {...register(name, { valueAsNumber })}
-        {...rest} // Desestructurar otras props
+        {...register(name, { valueAsDate: true })}
+        {...rest}
       />
       {error && <span className="text-red-500 text-sm">{error.message}</span>}
     </div>

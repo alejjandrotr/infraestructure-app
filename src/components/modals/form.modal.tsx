@@ -1,6 +1,6 @@
-import React, { ReactNode, useState } from 'react';
-import Loader from '../Loader';
-import { isDirty } from 'zod';
+import { ReactNode } from "react";
+import Loader from "../Loader";
+import { RiCloseLargeLine } from "react-icons/ri";
 
 export interface ModalProps {
   isOpen: boolean;
@@ -32,7 +32,7 @@ function Modal({
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="fixed z-10 inset-0 overflow-y-auto">
             <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0 overflow-y-auto">
-              {' '}
+              {" "}
                
               <div
                 className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
@@ -48,30 +48,16 @@ function Modal({
                 className="inline-block   overflow-y-auto
  align-middle bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
               >
-                {' '}
+                {" "}
                  
                 <div className="hidden sm:block absolute top-0 right-0 pt-4 pr-4">
                   <button
                     type="button"
-                    className="bg-white rounded-md   
- text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    className="bg-white rounded-md text-gray-400 hover:text-gray-500 transition-colors duration-200 ease-in-out transform hover:scale-105 focus:outline-none"
                     onClick={handleClose}
                   >
-                    <span className="sr-only">Cerrar</span>  
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke-width="1.5"
-                      stroke="currentColor"
-                      className="size-6"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M6 18 18 6M6 6l12 12"
-                      />
-                    </svg>
+                    <span className="sr-only">Cerrar</span>
+                    <RiCloseLargeLine />
                   </button>
                 </div>
                 <div className="">
@@ -96,7 +82,7 @@ function Modal({
  shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
                     onClick={handleClose}
                   >
-                    {' '}
+                    {" "}
                         Cancelar
                   </button>
                   <button
@@ -105,8 +91,8 @@ function Modal({
                                       px-4 py-2 
                               ${
                                 isValid
-                                  ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
-                                  : 'bg-green-600 text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'
+                                  ? "bg-gray-400 text-gray-200 cursor-not-allowed"
+                                  : "bg-green-600 text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
                               } 
                               sm:w-auto sm:text-sm`}
                   >
