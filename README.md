@@ -3,7 +3,7 @@
 
 ## English
 
-This project is based on the TailAdmin template, featuring a layout and sidebar. The original logo is maintained while a new one is being developed.
+This project is based on the TailAdmin template, featuring a layout and sidebar. The original logo is maintained while a new one is being developed. In the development of this project, several libraries and tools were utilized, including **Zod** for schema validation, **Chart.js** for data visualization, **react-hook-form** for managing form state and validation, and **Faker** for generating mock data.
 
 ### Purpose
 
@@ -12,6 +12,27 @@ The project aims to serve as a back-office application for managing the structur
 - A seating map with seat locations.
 - Displaying reserved seats for each booking.
 
+### Running the Project
+
+To run this project locally, follow these steps:
+
+1. Install dependencies: 
+	```bash
+   npm install
+
+2. Start the application: 
+	```bash
+   npm run start
+	 ```
+
+3. Run tests:
+	```bash
+   npm run test
+	```
+4. Start Storybook: 
+	```bash
+   npm run storybook
+	```
 ### Existing Data Structures
 
 1. **Users**: These are the individuals who operate the system. An admin user is automatically generated with the password `12345`.
