@@ -1,7 +1,7 @@
 import { useState, ReactNode } from 'react';
 import { AddButton } from '../buttons/add-button';
 
-interface SearchComponentProps {
+export interface SearchComponentProps {
   title: string;
   children?: ReactNode;
   onSearch: (searchTerm: string) => void;

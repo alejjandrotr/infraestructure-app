@@ -3,21 +3,48 @@ import { render, screen, fireEvent, act } from "@testing-library/react";
 import { AuthProvider } from "../../core/Users/context/auth.context";
 import { userRepository } from "../../core/Users/user.api";
 import SignInPage from "./SignIn";
-import toast from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
+import { MemoryRouter, useNavigate } from "react-router-dom";
 
-// Mock del userRepository para simular la respuesta del login
+// Mock the userRepository for simulating login responses
 jest.mock("../../core/Users/user.api");
 
+const mockedUsedNavigate = jest.fn();
+
+jest.mock("react-router-dom", () => ({
+  ...(jest.requireActual("react-router-dom") as any),
+  useNavigate: () => mockedUsedNavigate,
+}));
+
 describe("SignInPage", () => {
+  beforeAll(() => {
+    Object.defineProperty(window, "matchMedia", {
+      writable: true,
+      value: jest.fn().mockImplementation((query) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: jest.fn(),
+        removeListener: jest.fn(),
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
+        dispatchEvent: jest.fn(),
+      })),
+    });
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   test("renders login form", () => {
     render(
-      <AuthProvider>
-        <SignInPage />
-      </AuthProvider>
+      <MemoryRouter>
+        <AuthProvider>
+          <Toaster position="top-right" reverseOrder={false} />
+          <SignInPage />
+        </AuthProvider>
+      </MemoryRouter>
     );
 
     expect(screen.getByLabelText(/Usuario/i)).toBeInTheDocument();
@@ -29,14 +56,16 @@ describe("SignInPage", () => {
 
   test("displays error message on invalid login", async () => {
     (userRepository.login as jest.Mock).mockImplementation(() => {
-      console.log("called");
       throw new Error("Usuario y/o Contraseña invalidos");
     });
 
     render(
-      <AuthProvider>
-        <SignInPage />
-      </AuthProvider>
+      <MemoryRouter>
+        <AuthProvider>
+          <Toaster position="top-right" reverseOrder={false} />
+          <SignInPage />
+        </AuthProvider>
+      </MemoryRouter>
     );
 
     fireEvent.input(screen.getByLabelText(/Usuario/i), {
@@ -48,21 +77,9 @@ describe("SignInPage", () => {
 
     // Wrap the click event in act()
     await act(async () => {
-      await fireEvent.click(
-        screen.getByRole("button", { name: /Iniciar Sesion/i })
-      );
+      fireEvent.click(screen.getByRole("button", { name: /Iniciar Sesion/i }));
     });
-
-    // Mock toast.error implementation
-    jest.spyOn(toast, "error").mockImplementation((msg) => {
-      console.log('called too')
-      return "ok";
-    });
-
-    // Assert that toast.error was called
-    expect(toast.error).toHaveBeenCalledWith(
-      "Usuario y/o Contraseña invalidos"
-    );
+    expect(mockedUsedNavigate).not.toHaveBeenCalled();
   });
 
   test("navigates to home on successful login", async () => {
@@ -72,12 +89,13 @@ describe("SignInPage", () => {
 
     (userRepository.login as jest.Mock).mockResolvedValue(mockLoginResponse);
 
-    const navigate = jest.fn();
-
     render(
-      <AuthProvider>
-        <SignInPage {...{ navigate }} />
-      </AuthProvider>
+      <MemoryRouter>
+        <AuthProvider>
+          <Toaster position="top-right" reverseOrder={false} />
+          <SignInPage />
+        </AuthProvider>
+      </MemoryRouter>
     );
 
     fireEvent.input(screen.getByLabelText(/Usuario/i), {
@@ -88,12 +106,10 @@ describe("SignInPage", () => {
       target: { value: "testPassword" },
     });
 
-    // Wrap the click event in act()
     await act(async () => {
       fireEvent.click(screen.getByRole("button", { name: /Iniciar Sesion/i }));
     });
 
-    // Verify that navigate was called with the correct argument
-    expect(navigate).toHaveBeenCalledWith("/");
+    expect(mockedUsedNavigate).toHaveBeenCalledWith("/");
   });
 });

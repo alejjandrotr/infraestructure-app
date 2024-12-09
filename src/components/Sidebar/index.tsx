@@ -112,6 +112,10 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
             <ul className="mb-6 flex flex-col gap-1.5">
               <li>
+                <MenuLink pathTo={AppPaths.DASHBOARD} title={AppTitles.DASHBOARD} pathname={pathname} />
+              </li>  
+              
+              <li>
                 <MenuLink pathTo={AppPaths.SALAS} title={AppTitles.SALAS} pathname={pathname} />
               </li>
               <li>

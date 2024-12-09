@@ -5,7 +5,7 @@ export interface SelectOption {
   value: number;
 }
 
-interface SelectCRUDProps extends InputProp {
+export interface SelectCRUDProps extends InputProp {
   selectedOption?: number | string; 
   isOptionSelected: boolean;
   options: SelectOption[];

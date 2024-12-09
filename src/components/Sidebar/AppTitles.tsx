@@ -5,5 +5,6 @@ export enum AppTitles {
   SALAS = 'Salas',
   CATEGORIA_SALAS = 'Categorias de la Sala',
   USERS = 'Usuarios',
-  ASIENTOS = "ASIENTOS"
+  ASIENTOS = "ASIENTOS",
+  DASHBOARD = "Dashboard"
 }

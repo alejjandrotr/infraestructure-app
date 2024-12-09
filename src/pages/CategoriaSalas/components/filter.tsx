@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Sala, SalaFilter, SalaSchemaFilter } from '../../../core/Sala/sala';
 import { useForm } from 'react-hook-form';
 import { InputText } from '../../../components/inputs/InputText';
 import { CategoriaSala, CategoriaSalaFilter, CategoriaSalaSchema } from '../../../core/CategoriaSala/categoria-sala';
@@ -10,7 +9,7 @@ export const FilterList = ({
 }: {
   onSearch: (search: CategoriaSala) => void;
 }) => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading] = useState(false);
   const { register, handleSubmit, formState } = useForm<CategoriaSalaFilter>({
     resolver: zodResolver(CategoriaSalaSchema),
     values: {},

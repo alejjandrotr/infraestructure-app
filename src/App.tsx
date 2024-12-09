@@ -18,6 +18,7 @@ import { AuthProvider, useAuth } from "./core/Users/context/auth.context";
 import { PrivateRoute } from "./components/routes/PrivateRoute";
 import ReservasSalaAdminPage from "./pages/ReservasSala/reservas-sala-admin.page";
 import { AppPaths } from "./components/Sidebar/AppPaths";
+import DashboardPage from "./pages/dashboard/dashboard.page";
 
 function App() {
   return (
@@ -52,7 +53,7 @@ function AppElement() {
             element={
               <>
                 <PageTitle title="Dashboard del Cine | CineAdmin" />
-                <SalasAdminPage />
+                <DashboardPage />
               </>
             }
           />
@@ -114,7 +115,7 @@ function AppElement() {
             ) : (
               <>
                 <PageTitle title="Login | CineAdmin" />
-                <SignInPage {...{ navigate }} />
+                <SignInPage />
               </>
             )
           }

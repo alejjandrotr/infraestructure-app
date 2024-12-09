@@ -23,6 +23,7 @@ const TableRow: React.FC<TableRowProps> = React.memo(
             isLastRow ? "" : "border-b border-stroke dark:border-strokedark"
           }`}
           style={rowStyle}
+          role="row"
         >
           {columns.map((column, index) => (
             <TableCell

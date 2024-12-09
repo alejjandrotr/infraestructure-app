@@ -8,8 +8,10 @@ import { InputText } from "../../components/inputs/InputText";
 import { LoginDto, LoginShema } from "../../core/Users/user";
 import { userRepository } from "../../core/Users/user.api";
 import { useAuth } from "../../core/Users/context/auth.context";
+import { useNavigate } from "react-router-dom";
 
-export const SignInPage: React.FC<{ navigate: any }> = ({ navigate }: { navigate: any }) => {
+export const SignInPage: React.FC = () => {
+  const navigate = useNavigate();
   const { login } = useAuth();
   const [loading, setIsLoading] = useState(false);
 
@@ -28,11 +30,8 @@ export const SignInPage: React.FC<{ navigate: any }> = ({ navigate }: { navigate
       login(JSON.parse(save.token));
       navigate("/");
     } catch (e) {
-      console.log('An error happend')
       setIsLoading(false);
-      console.log('An error happend 2')
       toast.error("Usuario y/o Contraseña invalidos");
-      console.log('An error happend 3')
     }
   };
   return (
@@ -183,13 +182,14 @@ export const SignInPage: React.FC<{ navigate: any }> = ({ navigate }: { navigate
 
               <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="mb-4">
-                  <label htmlFor="input-usuario" className="mb-2.5 block font-medium text-black dark:text-white">
+                  <label
+                    htmlFor="input-usuario"
+                    className="mb-2.5 block font-medium text-black dark:text-white"
+                  >
                     Usuario
                   </label>
                   <div className="relative">
                     <InputText
-
-
                       type="text"
                       name="usuario"
                       placeholder="Usuario"
@@ -218,7 +218,10 @@ export const SignInPage: React.FC<{ navigate: any }> = ({ navigate }: { navigate
                 </div>
 
                 <div className="mb-6">
-                  <label htmlFor="input-contraseña" className="mb-2.5 block font-medium text-black dark:text-white">
+                  <label
+                    htmlFor="input-contraseña"
+                    className="mb-2.5 block font-medium text-black dark:text-white"
+                  >
                     Contraseña
                   </label>
                   <div className="relative">
